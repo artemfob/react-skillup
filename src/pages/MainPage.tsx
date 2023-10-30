@@ -1,21 +1,20 @@
 import {Stack} from "react-bootstrap";
 import React, {useContext} from "react";
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import { Route, Routes, useNavigate} from "react-router-dom";
 import {ProductListContext} from "../context/ProductListContext";
-import {AuthContext} from "../context/AuthContext";
 import HomePage from "./HomePage";
 import {CartPage, DetailsPage} from "./exports";
 import ProtectedRoute from "../components/ProtectedRoute";
-export default function MainPage() {
-    const {auth} = useContext(AuthContext);
+
+function MainPage() {
+
 
     return (
         <>
             <Header/>
-            <Navigate to='/home'/>
             <Routes>
-                <Route path="home" element={<HomePage/>}/>
-                <Route path="cart" element={<ProtectedRoute auth={auth}>
+                <Route path="/" element={<HomePage/>}/>
+                <Route path="cart" element={<ProtectedRoute>
                     <CartPage/>
                 </ProtectedRoute>}/>
                 <Route path="details" element={<DetailsPage/>}/>
@@ -34,10 +33,11 @@ function Header() {
             direction="horizontal"
             gap={3}
         >
-            <h3 onClick={()=>navigate('/home')}>Super market</h3>
-            <p className="p-2 ms-auto" onClick={() => navigate('/cart')}>Cart ({chosen.length})</p>
+            <h3 onClick={() => navigate('/')}>Super market</h3>
+            <p className="p-2 ms-auto" onClick={() => chosen.length>0&& navigate('/cart')}>Cart ({chosen.length})</p>
         </Stack>
     );
 }
 
 
+export default MainPage

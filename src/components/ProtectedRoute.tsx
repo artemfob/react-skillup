@@ -1,14 +1,12 @@
-import React, {ReactElement} from "react";
-import {Navigate, Outlet} from "react-router-dom";
+import React, {ReactElement, useContext} from "react";
+import {Navigate} from "react-router-dom";
+import {AuthContext} from "../context/AuthContext";
 
-interface IProtectedRoute{
-    auth:boolean,
-    children: React.ReactElement
-}
+export default function ProtectedRoute({children}:{children: React.ReactElement}): ReactElement {
+    const {auth} = useContext(AuthContext);
 
-export default function ProtectedRoute(props:IProtectedRoute):ReactElement{
-    if(!props.auth){
-        return (<Navigate to='/login' />)
+    if (!auth) {
+        return (<Navigate to='/login'/>)
     }
-    return (props.children )
+    return (children)
 }

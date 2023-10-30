@@ -1,44 +1,37 @@
-import {ReactElement, useEffect, useState} from "react";
-import {useNavigate, } from "react-router-dom";
+import {ReactElement, useContext,} from "react";
+import {useNavigate,} from "react-router-dom";
 import Product from "../models/product";
 import ProductComponent from "./ProductComponent";
-
-interface IProductList {
-    list?: Product[]
-}
+import {ProductListContext} from "../context/ProductListContext";
 
 
-function ProductsListComponent(props: IProductList): ReactElement {
-    const [list, setList] = useState<Product[]>(props.list ?? [])
-    const [loading, setLoading] = useState(true)
+function ProductsListComponent(): ReactElement {
+    const {list, chosen} = useContext(ProductListContext);
+
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!props.list) {
-            fetch('https://fakestoreapi.com/products?limit=150').then(res => {
-                if (res.ok) {
-                    return res.json()
-                }
-            }).then(data => setList(data)
-            ).finally(() => setLoading(false))
-        } else {
-            setList(props.list)
-            setLoading(false)
-        }
-    }, [props.list])
+    function navigateToDetails(id: number) {
+        navigate(`/details?id=${id}`)
+    }
 
-    function navigateToDetails(product: Product) {
-        const {title, price, description, image, id} = product
-        navigate(`/details?title=${title}&price=${price}&description=${description}&image=${image}&id=${id}`)
+    function showList() {
+        if (window.location.pathname === '/cart') {
+            return chosen.map((e: Product) =>
+                <ProductComponent key={e.id} product={e} navigate={() => navigateToDetails(e.id)}
+                                  fromCartPage={chosen !== undefined}/>
+            )
+        } else {
+            return list.map((e: Product) =>
+                <ProductComponent key={e.id} product={e} navigate={() => navigateToDetails(e.id)}
+                                  fromCartPage={chosen === undefined}/>
+            )
+        }
     }
 
 
     return (
         <div className="product_list">
-            {!loading && list.map((e: Product) =>
-                <ProductComponent key={e.id} product={e} navigate={() => navigateToDetails(e)}
-                                  fromCartPage={props.list !== undefined}/>
-            )}
+            {showList()}
         </div>
     );
 }

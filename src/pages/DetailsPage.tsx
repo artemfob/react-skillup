@@ -1,20 +1,39 @@
 import {useSearchParams} from "react-router-dom";
 import '../style.scss'
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ProductListContext} from "../context/ProductListContext";
 import Product from "../models/product";
 
 function DetailsPage() {
-    const {add, chosen} = useContext(ProductListContext)
     const [params] = useSearchParams()
-    const product: Product = {
-        title: params.get('title') ?? "",
-        price: params.get('price') ?? "",
-        description: params.get('description') ?? "",
-        image: params.get('image') ?? '',
-        id: Number(params.get('id'))??0,
-        category: params.get('category') ?? ''
-    }
+
+    const {add, chosen, list} = useContext(ProductListContext)
+    const id = Number(params.get('id')) ?? 0
+
+    const [product, setProduct] = useState<Product>(list.filter(e => e.id === id)[0])
+    const [loading, setLoading] = useState<boolean>(true)
+
+    useEffect(()=>{
+        if(product===undefined){
+            fetch(`https://fakestoreapi.com/products/${id}`).then(res => {
+                if (res.ok) {
+                    return res.json()
+
+                }
+            }).then(data => {
+                    setProduct(data)
+                }
+            ).finally(()=>setLoading(false))
+        }else{
+            setLoading(false)
+        }
+    },[id, product])
+
+    if(loading){
+        return (
+            <h2 className="text-center mt-4">Loading</h2>
+        )
+    }else
     return (
         <div className="details">
             <img src={product.image} alt={product.image}/>

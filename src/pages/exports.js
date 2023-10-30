@@ -4,5 +4,7 @@ import CartPage from "./CartPage"
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 
-export {MainPage, DetailsPage, CartPage, HomePage,
-    LoginPage}
+export {
+    MainPage, DetailsPage, CartPage, HomePage,
+    LoginPage
+}

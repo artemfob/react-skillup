@@ -7,6 +7,7 @@ import {ProductListContext} from "../context/ProductListContext";
 interface ProductProps {
     product: Product,
     fromCartPage: boolean,
+
     navigate(): void,
 }
 
